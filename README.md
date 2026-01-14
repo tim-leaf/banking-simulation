@@ -11,12 +11,12 @@ The SQL Banking Simulation allows users to manage **customers** and **accounts**
 The system is designed to be modular, maintainable, and easily extendable.
 
 Key features include:
-	- Customer creation and management
-	- Multiple account types (e.g. checking, savings)
-	- Deposits, withdrawals, and transfers
-	- Transaction logging
-	- Persistent storage via SQLite
-	- Input validation and error handling
+	-[x] Customer creation and management
+	-[x] Multiple account types (e.g. checking, savings)
+	-[_] Deposits, withdrawals, and transfers
+	-[_] Transaction logging
+	-[_] Persistent storage via SQLite
+	-[x] Input validation and error handling
 
 
 ---

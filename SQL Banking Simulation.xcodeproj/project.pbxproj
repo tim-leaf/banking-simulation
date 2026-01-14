@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		03DD88AC2F1752330022C105 /* libSQLiteCpp.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 03DD88AB2F1752330022C105 /* libSQLiteCpp.0.dylib */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		033A76F42F173C360033B4D6 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -20,12 +24,29 @@
 
 /* Begin PBXFileReference section */
 		033A76F62F173C360033B4D6 /* SQL Banking Simulation */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "SQL Banking Simulation"; sourceTree = BUILT_PRODUCTS_DIR; };
+		03DD889E2F17507B0022C105 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		03DD88AB2F1752330022C105 /* libSQLiteCpp.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSQLiteCpp.0.dylib; path = ../../../../../../opt/homebrew/Cellar/sqlitecpp/3.3.3/lib/libSQLiteCpp.0.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		033A76F82F173C360033B4D6 /* SQL Banking Simulation */ = {
+		03DD889D2F17507B0022C105 /* data */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "SQL Banking Simulation";
+			path = data;
+			sourceTree = "<group>";
+		};
+		03DD889F2F17507B0022C105 /* images */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = images;
+			sourceTree = "<group>";
+		};
+		03DD88A12F17507B0022C105 /* include */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = include;
+			sourceTree = "<group>";
+		};
+		03DD88A52F17507B0022C105 /* src */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = src;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -35,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03DD88AC2F1752330022C105 /* libSQLiteCpp.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,7 +66,12 @@
 		033A76ED2F173C360033B4D6 = {
 			isa = PBXGroup;
 			children = (
-				033A76F82F173C360033B4D6 /* SQL Banking Simulation */,
+				03DD889E2F17507B0022C105 /* README.md */,
+				03DD88A52F17507B0022C105 /* src */,
+				03DD88A12F17507B0022C105 /* include */,
+				03DD889D2F17507B0022C105 /* data */,
+				03DD889F2F17507B0022C105 /* images */,
+				03DD88AA2F1752330022C105 /* Frameworks */,
 				033A76F72F173C360033B4D6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -55,6 +82,14 @@
 				033A76F62F173C360033B4D6 /* SQL Banking Simulation */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		03DD88AA2F1752330022C105 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				03DD88AB2F1752330022C105 /* libSQLiteCpp.0.dylib */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -73,7 +108,10 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				033A76F82F173C360033B4D6 /* SQL Banking Simulation */,
+				03DD889D2F17507B0022C105 /* data */,
+				03DD889F2F17507B0022C105 /* images */,
+				03DD88A12F17507B0022C105 /* include */,
+				03DD88A52F17507B0022C105 /* src */,
 			);
 			name = "SQL Banking Simulation";
 			packageProductDependencies = (
@@ -246,20 +284,66 @@
 		033A76FE2F173C360033B4D6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				AUTOMATION_APPLE_EVENTS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++23";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 56H72WXFTD;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu23;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/include",
+					/opt/homebrew/Cellar/sqlitecpp/3.3.3/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/homebrew/Cellar/sqlitecpp/3.3.3/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
+				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
+				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
+				RUNTIME_EXCEPTION_DEBUGGING_TOOL = NO;
+				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = YES;
 			};
 			name = Debug;
 		};
 		033A76FF2F173C360033B4D6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				AUTOMATION_APPLE_EVENTS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++23";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 56H72WXFTD;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu23;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/include",
+					/opt/homebrew/Cellar/sqlitecpp/3.3.3/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/homebrew/Cellar/sqlitecpp/3.3.3/lib,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
+				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
+				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
+				RUNTIME_EXCEPTION_DEBUGGING_TOOL = NO;
+				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = YES;
 			};
 			name = Release;
 		};
