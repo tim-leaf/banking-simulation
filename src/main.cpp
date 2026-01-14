@@ -84,7 +84,7 @@ int main() {
 		cout << '\n';
 	}
 
-	cout << "Goodbye!\n";
+	cout << "Goodbye! \n";
 	return EXIT_SUCCESS;
 }
 
