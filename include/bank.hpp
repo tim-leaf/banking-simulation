@@ -41,11 +41,13 @@ class Bank {
 	vector<Customer> get_customers() const;
 
 	// Transaction methods
-	std::expected<bool, string> deposit(Customer &customer, Account &account, double amount);
+	std::expected<void, string> deposit //
+	    (Customer &customer, Account &account, double amount);
 
-	std::expected<bool, string> withdraw(Customer &customer, int account_id,
-	                                     double amount);
+	std::expected<void, string> withdraw //
+	    (Customer &customer, Account &account, double amount);
 
-	bool transfer(int from_customer_id, int from_acc_id, //
-	              int to_customer_id, int to_acc_id, double amount);
+	std::expected<void, string> transfer //
+	    (Customer &from_customer, Account &from_acc, Customer &to_customer,
+	     Account &to_acc, double amount);
 };

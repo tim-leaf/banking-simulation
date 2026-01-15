@@ -11,6 +11,8 @@ Account::Account(int ID, string type, double balance)
 
 void Account::add_to_balance(double amount) { balance += amount; }
 
+void Account::take_from_balance(double amount) { balance -= amount; };
+
 int Account::get_id() const { return ID; }
 
 string Account::get_type() const { return type; }

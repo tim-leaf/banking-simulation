@@ -21,10 +21,11 @@ bool Bank::init() {
 
 		// Create accounts table if it doesn't exist
 		db.exec("CREATE TABLE IF NOT EXISTS accounts("
-		        "	id INTEGER PRIMARY KEY,"
+		        "	id INTEGER NOT NULL,"
 		        "	customer_id INTEGER NOT NULL,"
 		        "	type TEXT NOT NULL,"
 		        "	balance REAL NOT NULL,"
+		        "	PRIMARY KEY (customer_id, id),"
 		        "	FOREIGN KEY(customer_id) REFERENCES customers(id)"
 		        ");");
 
@@ -149,7 +150,11 @@ Customer *Bank::get_customer(int ID) {
 vector<Customer> Bank::get_customers() const { return customers; }
 
 #pragma mark - Operations
-std::expected<bool, string> Bank::deposit(Customer &customer, Account &account, double amount) {
+std::expected<void, string> Bank::deposit //
+    (Customer &customer, Account &account, double amount) {
+
+	if (amount < 0.0)
+		return std::unexpected("error negative amount");
 
 	account.add_to_balance(amount);
 
@@ -164,15 +169,83 @@ std::expected<bool, string> Bank::deposit(Customer &customer, Account &account, 
 		query.exec();
 
 	} catch (const std::exception &e) {
-		std::cerr << "Failed to update account in DB: " << e.what() << '\n';
+		std::cerr << "Failed to update account in DB: " << e.what();
 	}
 
-	return true;
+	return {};
 }
 
-//
-//
-bool withdraw(int customer_id, int account_id, double amount);
+std::expected<void, string> Bank::withdraw //
+    (Customer &customer, Account &account, double amount) {
 
-bool transfer(int from_customer_id, int from_acc_id, //
-              int to_customer_id, int to_acc_id, double amount);
+	if (amount < 0.0)
+		return std::unexpected("error negative amount");
+
+	if (account.get_balance() <= amount)
+		return std::unexpected("balance too low for operation");
+
+	account.take_from_balance(amount);
+
+	try {
+
+		SQLite::Statement query(
+		    db,
+		    "UPDATE accounts SET balance = ? WHERE id = ? AND customer_id = ?;");
+		query.bind(1, account.get_balance());
+		query.bind(2, account.get_id());
+		query.bind(3, customer.get_id());
+		query.exec();
+
+	} catch (std::exception &e) {
+		return std::unexpected //
+		    ("Failed to update account in DB: " + std::to_string(*e.what()));
+	}
+
+	return {};
+}
+
+std::expected<void, string> Bank::transfer //
+    (Customer &from_customer, Account &from_acc, Customer &to_customer,
+     Account &to_acc, double amount) {
+
+	if (from_customer.get_id() == to_customer.get_id())
+		return std::unexpected("Error cannot transfer money to self");
+
+	if (amount < 0.0)
+		return std::unexpected("Error negative amount");
+
+	if (from_acc.get_balance() < amount)
+		return std::unexpected("Balance too low");
+
+	from_acc.take_from_balance(amount);
+	to_acc.add_to_balance(amount);
+
+	try {
+
+		// Update account A
+		SQLite::Statement query_A(
+		    db,
+		    "UPDATE accounts SET balance = ? WHERE id = ? AND customer_id = ?;");
+
+		query_A.bind(1, from_acc.get_balance());
+		query_A.bind(2, from_acc.get_id());
+		query_A.bind(3, from_customer.get_id());
+		query_A.exec();
+
+		// Update account B
+		SQLite::Statement query_B(
+		    db,
+		    "UPDATE accounts SET balance = ? WHERE id = ? AND customer_id = ?;");
+
+		query_B.bind(1, to_acc.get_balance());
+		query_B.bind(2, to_acc.get_id());
+		query_B.bind(3, to_customer.get_id());
+		query_B.exec();
+
+	} catch (std::exception &e) {
+		return std::unexpected //
+		    ("Failed to update account in DB: " + std::to_string(*e.what()));
+	}
+
+	return {};
+}

@@ -15,14 +15,22 @@ void add_customer(Bank &bank);
 void create_account_for(Bank &bank);
 void deposit(Bank &bank);
 void list_customers(const Bank &bank);
+void transfer(Bank &bank);
+void withdraw(Bank &bank);
 
 int main() {
+	// Initialize data directory
+	if (!fs::exists("data/"))
+		fs::create_directory("data/");
+
+	// Initialize database
 	Bank bank("data/bank.db");
 	if (!bank.init())
 		throw std::runtime_error("error initializing database");
 
 	bank.load_customers();
 
+	// Menu loop
 	bool runs = true;
 
 	while (runs) {
@@ -32,7 +40,8 @@ int main() {
 		     << "2) List customers" << '\n'          //
 		     << "3) Create account" << '\n'          //
 		     << "4) Deposit" << '\n'                 //
-		     << "5) Transfer" << '\n'                //
+		     << "5) Withdraw" << '\n'                //
+		     << "6) Transfer" << '\n'                //
 		     << "0) Exit" << '\n';
 
 		cout << "\n-> ";
@@ -66,11 +75,11 @@ int main() {
 			break;
 
 		case 5:
-			//
+			withdraw(bank);
 			break;
 
 		case 6:
-			//
+			transfer(bank);
 			break;
 
 		case 0:
@@ -140,6 +149,8 @@ void list_customers(const Bank &bank) {
 
 		if (!cust.get_accounts().empty())
 			std::cout << " ]";
+
+		std::cout << '\n';
 	}
 
 	std::cout << '\n';
@@ -217,7 +228,12 @@ void deposit(Bank &bank) {
 	Customer *customer = bank.get_customer(customer_id);
 
 	if (!customer) {
-		cerr << "customer not found with ID " << customer_id;
+		cerr << "customer not found with ID " << customer_id << '\n';
+
+		cout << "\nPress ENTER to continue...";
+		string _;
+		getline(cin, _);
+
 		return;
 	}
 	std::cout << customer->get_name() << "\n\n";
@@ -239,7 +255,12 @@ void deposit(Bank &bank) {
 	Account *account = customer->get_account(account_id);
 
 	if (!account) {
-		cerr << "customer not found with ID " << customer_id;
+		cerr << "account not found with ID " << account_id << '\n';
+
+		cout << "\nPress ENTER to continue...";
+		string _;
+		getline(cin, _);
+
 		return;
 	}
 	std::cout << account->get_type() << "\n\n";
@@ -258,5 +279,288 @@ void deposit(Bank &bank) {
 		return;
 	}
 
-	bank.deposit(*customer, *account, amount);
+	auto result = bank.deposit(*customer, *account, amount);
+
+	if (result) {
+		cout << "Balance = " << account->get_balance() << '\n';
+	} else {
+		cerr << result.error() << '\n';
+		cout << "Balance = " << account->get_balance() << '\n';
+	}
+
+	cout << "\nPress ENTER to continue...";
+	string _;
+	getline(cin, _);
+}
+
+void withdraw(Bank &bank) {
+	cout << "=== Banking Simulation ===" << '\n';
+
+	int customer_id;
+	cout << "Customer ID -> ";
+
+	string cust_id_str;
+	getline(cin, cust_id_str);
+
+	try {
+		customer_id = stoi(cust_id_str);
+	} catch (...) {
+		cerr << "Invalid input\n";
+		return;
+	}
+
+	Customer *customer = bank.get_customer(customer_id);
+
+	if (!customer) {
+		cerr << "customer not found with ID " << customer_id << '\n';
+
+		cout << "\nPress ENTER to continue...";
+		string _;
+		getline(cin, _);
+
+		return;
+	}
+	std::cout << customer->get_name() << "\n\n";
+
+	// Get account ID
+	int account_id;
+	cout << "Account ID -> ";
+
+	string acc_id_str;
+	getline(cin, acc_id_str);
+
+	try {
+		account_id = stoi(acc_id_str);
+	} catch (...) {
+		cerr << "Invalid input\n";
+		return;
+	}
+
+	Account *account = customer->get_account(account_id);
+
+	if (!account) {
+		cerr << "account not found with ID " << account_id << '\n';
+
+		cout << "\nPress ENTER to continue...";
+		string _;
+		getline(cin, _);
+
+		return;
+	}
+	std::cout << account->get_type() << "\n\n";
+
+	// Get amount
+	double amount;
+	cout << "Amount to withdraw -> ";
+
+	string amount_str;
+	getline(cin, amount_str);
+
+	try {
+		amount = stod(amount_str);
+	} catch (...) {
+		cerr << "Invalid input\n";
+		return;
+	}
+
+	//
+
+	auto result = bank.withdraw(*customer, *account, amount);
+
+	if (result) {
+		cout << "Balance = " << account->get_balance() << '\n';
+	} else {
+		cerr << result.error() << '\n';
+		cout << "Balance = " << account->get_balance() << '\n';
+	}
+
+	//
+
+	cout << "\nPress ENTER to continue...";
+	string _;
+	getline(cin, _);
+}
+
+void transfer(Bank &bank) {
+	cout << "=== Banking Simulation ===" << '\n';
+
+	// Get customer_A
+	int customer_A_id;
+	cout << "Customer_A ID -> ";
+
+	string cust_A_id_str;
+	getline(cin, cust_A_id_str);
+
+	try {
+		customer_A_id = stoi(cust_A_id_str);
+	} catch (...) {
+		cerr << "Invalid input\n";
+
+		cout << "\nPress ENTER to continue...";
+		string _;
+		getline(cin, _);
+
+		return;
+	}
+
+	Customer *customer_A = bank.get_customer(customer_A_id);
+
+	if (!customer_A) {
+		cerr << "customer not found with ID " << customer_A_id << '\n';
+
+		cout << "\nPress ENTER to continue...";
+		string _;
+		getline(cin, _);
+
+		return;
+	}
+	std::cout << customer_A->get_name() << "\n\n";
+
+	// Get account_A ID
+	int account_A_id;
+	cout << "Account_A ID -> ";
+
+	string acc_A_id_str;
+	getline(cin, acc_A_id_str);
+
+	try {
+		account_A_id = stoi(acc_A_id_str);
+	} catch (...) {
+		cerr << "Invalid input\n";
+
+		cout << "\nPress ENTER to continue...";
+		string _;
+		getline(cin, _);
+
+		return;
+	}
+
+	Account *account_A = customer_A->get_account(account_A_id);
+
+	if (!account_A) {
+		cerr << "account not found with ID " << account_A_id << '\n';
+
+		cout << "\nPress ENTER to continue...";
+		string _;
+		getline(cin, _);
+
+		return;
+	}
+	std::cout << account_A->get_type() << "\n\n";
+
+	//--------------------------------------------
+
+	// Get customer_B
+	int customer_B_id;
+	cout << "Customer_B ID -> ";
+
+	string cust_B_id_str;
+	getline(cin, cust_B_id_str);
+
+	try {
+		customer_B_id = stoi(cust_B_id_str);
+	} catch (...) {
+		cerr << "Invalid input\n";
+
+		cout << "\nPress ENTER to continue...";
+		string _;
+		getline(cin, _);
+
+		return;
+	}
+
+	Customer *customer_B = bank.get_customer(customer_B_id);
+
+	if (!customer_B) {
+		cerr << "customer not found with ID " << customer_B_id << '\n';
+
+		cout << "\nPress ENTER to continue...";
+		string _;
+		getline(cin, _);
+
+		return;
+	}
+	std::cout << customer_B->get_name() << "\n\n";
+
+	// Get account_B ID
+	int account_B_id;
+	cout << "Account_B ID -> ";
+
+	string acc_B_id_str;
+	getline(cin, acc_B_id_str);
+
+	try {
+		account_B_id = stoi(acc_B_id_str);
+	} catch (...) {
+		cerr << "Invalid input\n";
+
+		cout << "\nPress ENTER to continue...";
+		string _;
+		getline(cin, _);
+
+		return;
+	}
+
+	Account *account_B = customer_B->get_account(account_B_id);
+
+	if (!account_B) {
+		cerr << "account not found with ID " << account_A_id << '\n';
+
+		cout << "\nPress ENTER to continue...";
+		string _;
+		getline(cin, _);
+
+		return;
+	}
+	std::cout << account_B->get_type() << "\n\n";
+
+	//--------------------------------------------
+
+	// Get amount
+	double amount;
+	cout << "Amount to transfer -> ";
+
+	string amount_str;
+	getline(cin, amount_str);
+
+	try {
+		amount = stod(amount_str);
+	} catch (...) {
+		cerr << "Invalid input\n";
+
+		cout << "\nPress ENTER to continue...";
+		string _;
+		getline(cin, _);
+
+		return;
+	}
+
+	//
+
+	auto result = bank.transfer //
+	              (*customer_A, *account_A, *customer_B, *account_B, amount);
+
+	if (!result) {
+		cerr << result.error() << '\n';
+
+		cout << "\nPress ENTER to continue...";
+		string _;
+		getline(cin, _);
+
+		return;
+	}
+
+	cout << "New balances\n"
+
+	     << '\t' << customer_A->get_name() << " : " << account_A->get_balance()
+	     << '\n'
+
+	     << '\t' << customer_B->get_name() << " : " << account_B->get_balance()
+	     << '\n';
+
+	//
+
+	cout << "\nPress ENTER to continue...";
+	string _;
+	getline(cin, _);
 }

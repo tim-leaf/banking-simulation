@@ -8,6 +8,7 @@
 #pragma once
 #include <SQLiteCpp/SQLiteCpp.h>
 #include <string>
+#include <iostream>
 
 using std::string;
 
@@ -22,6 +23,7 @@ class Account {
 	Account(int ID, string type, double balance);
 
 	void add_to_balance(double amount);
+	void take_from_balance(double amount);
 
 	int get_id() const;
 	string get_type() const;
