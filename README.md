@@ -15,7 +15,7 @@ Key features include:
 	-[x] Customer creation and management
 	-[x] Multiple account types (e.g. checking, savings)
 	-[x] Deposits, withdrawals, and transfers
-	-[_] Transaction logging
+	-[x] Transaction logging
 	-[x] Persistent storage via SQLite
 	-[x] Input validation and error handling
 ```
