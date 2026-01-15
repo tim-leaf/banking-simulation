@@ -38,12 +38,4 @@ BankingSimulation/
 │   ├── account.hpp           # Account class
 │   ├── customer.hpp          # Customer class
 │   └── bank.hpp              # Bank class + DB interactions
-│
-├── data/                     # Database file
-│   └── bank.db
-│
-├── images/                   # For screenshots if documenting
-│   └── (CLI screenshots)
-│
-└── Makefile / CMakeLists.txt # Build instructions
 ```

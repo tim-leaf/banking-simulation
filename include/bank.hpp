@@ -17,16 +17,13 @@
 
 #include "customer.hpp"
 
-namespace fs = std::filesystem;
-using std::vector;
-
 class Bank {
  private:
 	SQLite::Database db;
-	vector<Customer> customers;
+	std::vector<Customer> customers;
 
  public:
-	Bank(const fs::path &path);
+	Bank(const std::filesystem::path &path);
 
 	bool init();
 
@@ -38,20 +35,20 @@ class Bank {
 	void load_customers();
 	Customer *get_customer(int ID);
 
-	vector<Customer> get_customers() const;
+	std::vector<Customer> get_customers() const;
 
 	// Updates in DB
-	std::expected<void, string> update_account(Customer &customer,
-	                                           Account &account);
+	std::expected<void, std::string> update_account(Customer &customer,
+	                                                Account &account);
 
 	// Transaction methods
-	std::expected<void, string> deposit //
+	std::expected<void, std::string> deposit //
 	    (Customer &customer, Account &account, double amount);
 
-	std::expected<void, string> withdraw //
+	std::expected<void, std::string> withdraw //
 	    (Customer &customer, Account &account, double amount);
 
-	std::expected<void, string> transfer //
-	    (Customer &from_customer, Account &from_acc, Customer &to_customer,
-	     Account &to_acc, double amount);
+	std::expected<void, std::string> transfer        //
+	    (Customer &from_customer, Account &from_acc, //
+	     Customer &to_customer, Account &to_acc, double amount);
 };

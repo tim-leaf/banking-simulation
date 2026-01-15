@@ -13,23 +13,21 @@
 
 #include "account.hpp"
 
-using std::string, std::vector;
-
 class Customer {
  private:
 	int ID;
-	string name;
+	std::string name;
 
-	vector<Account> accounts{};
+	std::vector<Account> accounts{};
 
  public:
-	Customer(int ID, string name);
+	Customer(int ID, std::string name);
 
 	int get_id() const;
-	string get_name() const;
+	std::string get_name() const;
 
 	Account *get_account(int ID);
-	vector<Account> get_accounts() const;
+	std::vector<Account> get_accounts() const;
 
 	void add_account(const Account &account);
 };

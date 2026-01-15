@@ -6,13 +6,13 @@
 //
 
 #include "customer.hpp"
-Customer::Customer(int ID, string name) : ID(ID), name(std::move(name)) {}
+Customer::Customer(int ID, std::string name) : ID(ID), name(std::move(name)) {}
 
 int Customer::get_id() const { return ID; }
 
-string Customer::get_name() const { return name; }
+std::string Customer::get_name() const { return name; }
 
-vector<Account> Customer::get_accounts() const { return accounts; }
+std::vector<Account> Customer::get_accounts() const { return accounts; }
 
 Account *Customer::get_account(int ID) {
 	for (auto &acc : accounts) {

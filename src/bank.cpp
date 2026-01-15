@@ -7,7 +7,7 @@
 
 #include "bank.hpp"
 
-Bank::Bank(const fs::path &path)
+Bank::Bank(const std::filesystem::path &path)
     : db(path.c_str(), SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE) {}
 
 bool Bank::init() {
@@ -116,7 +116,7 @@ void Bank::load_customers() {
 		// Load all customers
 		while (query.executeStep()) {
 			int id = query.getColumn(0).getInt();
-			string name = query.getColumn(1).getText();
+			std::string name = query.getColumn(1).getText();
 			customers.emplace_back(Customer(id, name));
 		}
 
@@ -126,7 +126,7 @@ void Bank::load_customers() {
 		while (acc_query.executeStep()) {
 			int acc_id = int(acc_query.getColumn(0).getInt());
 			int cust_id = int(acc_query.getColumn(1).getInt());
-			string type = acc_query.getColumn(2).getText();
+			std::string type = acc_query.getColumn(2).getText();
 			double balance = acc_query.getColumn(3).getDouble();
 
 			Customer *c = get_customer(cust_id);
@@ -147,10 +147,10 @@ Customer *Bank::get_customer(int ID) {
 	return nullptr;
 }
 
-vector<Customer> Bank::get_customers() const { return customers; }
+std::vector<Customer> Bank::get_customers() const { return customers; }
 
 #pragma mark - Operations
-std::expected<void, string> Bank::deposit //
+std::expected<void, std::string> Bank::deposit //
     (Customer &customer, Account &account, double amount) {
 
 	if (amount < 0.0)
@@ -165,13 +165,13 @@ std::expected<void, string> Bank::deposit //
 	return {};
 }
 
-std::expected<void, string> Bank::withdraw //
+std::expected<void, std::string> Bank::withdraw //
     (Customer &customer, Account &account, double amount) {
 
 	if (amount < 0.0)
 		return std::unexpected("error negative amount");
 
-	if (account.get_balance() <= amount)
+	if (account.get_balance() < amount)
 		return std::unexpected("balance too low for operation");
 
 	account.take_from_balance(amount);
@@ -183,7 +183,7 @@ std::expected<void, string> Bank::withdraw //
 	return {};
 }
 
-std::expected<void, string> Bank::transfer //
+std::expected<void, std::string> Bank::transfer //
     (Customer &from_customer, Account &from_acc, Customer &to_customer,
      Account &to_acc, double amount) {
 
@@ -206,12 +206,12 @@ std::expected<void, string> Bank::transfer //
 		// Update account A
 		auto update_A = update_account(from_customer, from_acc);
 		if (!update_A)
-			return std::unexpected(update_A.error());
+			throw update_A.error();
 
 		// Update account B
 		auto update_B = update_account(to_customer, to_acc);
 		if (!update_B)
-			return std::unexpected(update_B.error());
+			throw update_B.error();
 
 		db.exec("COMMIT;");
 
@@ -224,7 +224,7 @@ std::expected<void, string> Bank::transfer //
 }
 
 #pragma mark - Updates
-std::expected<void, string> Bank::update_account //
+std::expected<void, std::string> Bank::update_account //
     (Customer &customer, Account &account) {
 	try {
 
