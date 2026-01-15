@@ -158,19 +158,9 @@ std::expected<void, string> Bank::deposit //
 
 	account.add_to_balance(amount);
 
-	try {
-
-		SQLite::Statement query(
-		    db,
-		    "UPDATE accounts SET balance = ? WHERE id = ? AND customer_id = ?;");
-		query.bind(1, account.get_balance());
-		query.bind(2, account.get_id());
-		query.bind(3, customer.get_id());
-		query.exec();
-
-	} catch (const std::exception &e) {
-		std::cerr << "Failed to update account in DB: " << e.what();
-	}
+	auto result = update_account(customer, account);
+	if (!result)
+		return std::unexpected(result.error());
 
 	return {};
 }
@@ -186,20 +176,9 @@ std::expected<void, string> Bank::withdraw //
 
 	account.take_from_balance(amount);
 
-	try {
-
-		SQLite::Statement query(
-		    db,
-		    "UPDATE accounts SET balance = ? WHERE id = ? AND customer_id = ?;");
-		query.bind(1, account.get_balance());
-		query.bind(2, account.get_id());
-		query.bind(3, customer.get_id());
-		query.exec();
-
-	} catch (std::exception &e) {
-		return std::unexpected //
-		    ("Failed to update account in DB: " + std::to_string(*e.what()));
-	}
+	auto result = update_account(customer, account);
+	if (!result)
+		return std::unexpected(result.error());
 
 	return {};
 }
@@ -217,34 +196,49 @@ std::expected<void, string> Bank::transfer //
 	if (from_acc.get_balance() < amount)
 		return std::unexpected("Balance too low");
 
-	from_acc.take_from_balance(amount);
-	to_acc.add_to_balance(amount);
-
 	try {
 
-		// Update account A
-		SQLite::Statement query_A(
-		    db,
-		    "UPDATE accounts SET balance = ? WHERE id = ? AND customer_id = ?;");
+		db.exec("BEGIN TRANSACTION;");
 
-		query_A.bind(1, from_acc.get_balance());
-		query_A.bind(2, from_acc.get_id());
-		query_A.bind(3, from_customer.get_id());
-		query_A.exec();
+		from_acc.take_from_balance(amount);
+		to_acc.add_to_balance(amount);
+
+		// Update account A
+		auto update_A = update_account(from_customer, from_acc);
+		if (!update_A)
+			return std::unexpected(update_A.error());
 
 		// Update account B
-		SQLite::Statement query_B(
-		    db,
-		    "UPDATE accounts SET balance = ? WHERE id = ? AND customer_id = ?;");
+		auto update_B = update_account(to_customer, to_acc);
+		if (!update_B)
+			return std::unexpected(update_B.error());
 
-		query_B.bind(1, to_acc.get_balance());
-		query_B.bind(2, to_acc.get_id());
-		query_B.bind(3, to_customer.get_id());
-		query_B.exec();
+		db.exec("COMMIT;");
+
+	} catch (const std::exception &e) {
+		db.exec("ROLLBACK;");
+		return std::unexpected(std::string("Transfer failed: ") + e.what());
+	}
+
+	return {};
+}
+
+#pragma mark - Updates
+std::expected<void, string> Bank::update_account //
+    (Customer &customer, Account &account) {
+	try {
+
+		SQLite::Statement query(db, "UPDATE accounts SET balance = ? WHERE id "
+		                            "= ? AND customer_id = ?;");
+
+		query.bind(1, account.get_balance());
+		query.bind(2, account.get_id());
+		query.bind(3, customer.get_id());
+		query.exec();
 
 	} catch (std::exception &e) {
 		return std::unexpected //
-		    ("Failed to update account in DB: " + std::to_string(*e.what()));
+		    (std::string("Failed to update account in DB: ") + e.what());
 	}
 
 	return {};

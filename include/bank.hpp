@@ -40,6 +40,10 @@ class Bank {
 
 	vector<Customer> get_customers() const;
 
+	// Updates in DB
+	std::expected<void, string> update_account(Customer &customer,
+	                                           Account &account);
+
 	// Transaction methods
 	std::expected<void, string> deposit //
 	    (Customer &customer, Account &account, double amount);
