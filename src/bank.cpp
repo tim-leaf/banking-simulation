@@ -31,11 +31,14 @@ bool Bank::init() {
 
 		// Create transaction table for logging
 		db.exec("CREATE TABLE IF NOT EXISTS transactions("
-		        "	id INTEGER PRIMARY KEY,"
+		        "	id INTEGER PRIMARY KEY AUTOINCREMENT,"
 		        "	account_from INTEGER,"
 		        "	account_to INTEGER,"
 		        "	amount REAL,"
-		        "	timestamp DATETIME DEFAULT CURRENT_TIMESTAMP"
+		        "	type TEXT NOT NULL,"
+		        "	timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,"
+		        "	FOREIGN KEY(account_from) REFERENCES accounts(id),"
+		        "	FOREIGN KEY(account_to) REFERENCES accounts(id)"
 		        ");");
 
 	} catch (std::exception &e) {
@@ -44,6 +47,39 @@ bool Bank::init() {
 	}
 
 	return true;
+}
+
+std::expected<void, std::string> Bank::load_history() {
+	transactions_hist.clear();
+
+	try {
+
+		SQLite::Statement query(
+		    db, "SELECT id, account_from, account_to, amount, type "
+		        "FROM transactions ORDER BY timestamp ASC;");
+
+		while (query.executeStep()) {
+			int id = query.getColumn(0).getInt();
+
+			int from_id = query.getColumn(1).getInt();
+			int to_id = query.getColumn(2).getInt();
+
+			double amount = query.getColumn(3).getDouble();
+			std::string type = query.getColumn(4).getString();
+
+			Customer *from = get_customer(from_id);
+			Customer *to = get_customer(to_id);
+
+			Transaction tr(from, to, amount, type, id);
+			transactions_hist.emplace_back(tr);
+		}
+
+	} catch (const std::exception &e) {
+		return std::unexpected(
+		    std::string("Failed to load transaction history: ") + e.what());
+	}
+
+	return {};
 }
 
 #pragma mark - Add Customer
@@ -162,6 +198,11 @@ std::expected<void, std::string> Bank::deposit //
 	if (!result)
 		return std::unexpected(result.error());
 
+	Transaction trans(nullptr, &customer, amount, "deposit");
+	auto record = record_transaction(trans);
+	if (!record)
+		return std::unexpected(result.error());
+
 	return {};
 }
 
@@ -178,6 +219,11 @@ std::expected<void, std::string> Bank::withdraw //
 
 	auto result = update_account(customer, account);
 	if (!result)
+		return std::unexpected(result.error());
+
+	Transaction trans = Transaction(&customer, nullptr, amount, "withdrawal");
+	auto record = record_transaction(trans);
+	if (!record)
 		return std::unexpected(result.error());
 
 	return {};
@@ -213,6 +259,12 @@ std::expected<void, std::string> Bank::transfer //
 		if (!update_B)
 			throw update_B.error();
 
+		Transaction tr =
+		    Transaction(&from_customer, &to_customer, amount, "transfer");
+		auto record = record_transaction(tr);
+		if (!record)
+			throw record.error();
+
 		db.exec("COMMIT;");
 
 	} catch (const std::exception &e) {
@@ -242,4 +294,38 @@ std::expected<void, std::string> Bank::update_account //
 	}
 
 	return {};
+}
+
+std::expected<void, std::string> Bank::record_transaction //
+    (Transaction &trans) {
+
+	try {
+
+		SQLite::Statement query(db, "INSERT INTO transactions "
+		                            "(account_from, account_to, amount, type) "
+		                            "VALUES (?, ?, ?, ?);");
+
+		query.bind(1, trans.from ? trans.from->get_id() : -1);
+		query.bind(2, trans.to ? trans.to->get_id() : -1);
+
+		query.bind(3, trans.amount);
+		query.bind(4, trans.type);
+
+		query.exec();
+
+		int last_id = static_cast<int>(db.getLastInsertRowid());
+		trans.set_id(last_id);
+
+		transactions_hist.push_back(trans);
+
+	} catch (const std::exception &e) {
+		return std::unexpected //
+		    (std::string("Failed to record transaction") + e.what());
+	}
+
+	return {};
+}
+
+std::vector<Transaction> Bank::get_history() { //
+	return transactions_hist;
 }

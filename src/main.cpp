@@ -9,10 +9,12 @@
 #include "output.hpp"
 #include <iostream>
 #include <limits>
+#include <sstream>
 
 void add_customer(Bank &bank);
 void create_account_for(Bank &bank);
 void deposit(Bank &bank);
+void history(Bank &bank);
 void list_customers(const Bank &bank);
 void transfer(Bank &bank);
 void withdraw(Bank &bank);
@@ -34,6 +36,7 @@ int main(int argc, char *argv[]) { //
 		throw std::runtime_error("error initializing database");
 
 	bank.load_customers();
+	bank.load_history();
 
 	// Menu loop
 	bool runs = true;
@@ -47,6 +50,7 @@ int main(int argc, char *argv[]) { //
 		          << "4) Deposit" << '\n'                 //
 		          << "5) Withdraw" << '\n'                //
 		          << "6) Transfer" << '\n'                //
+		          << "7) Transaction history" << '\n'     //
 		          << "0) Exit" << '\n';
 
 		out::blue << "\n-> ";
@@ -59,6 +63,7 @@ int main(int argc, char *argv[]) { //
 			choice = stoi(line);
 		} catch (...) {
 			std::cerr << "Invalid input\n";
+			pause();
 			continue;
 		}
 
@@ -85,6 +90,10 @@ int main(int argc, char *argv[]) { //
 
 		case 6:
 			transfer(bank);
+			break;
+
+		case 7:
+			history(bank);
 			break;
 
 		case 0:
@@ -117,11 +126,13 @@ void add_customer(Bank &bank) {
 		cust_id = stoi(line);
 		if (cust_id < 0) {
 			std::cout << "Invalid ID\n";
+			pause();
 			return;
 		}
 
 	} catch (...) {
 		std::cout << "Invalid ID\n";
+		pause();
 		return;
 	}
 
@@ -132,13 +143,17 @@ void add_customer(Bank &bank) {
 	bank.add_customer(cust);
 
 	std::cout << "\ncustomer added\n";
+	pause();
 }
 
 void list_customers(const Bank &bank) {
 	std::cout << "=== Banking Simulation ===" << '\n';
 
 	for (const auto &cust : bank.get_customers()) {
-		std::cout << cust.get_id() << " : " << cust.get_name() << '\t';
+		std::stringstream cust_str;
+		cust_str << cust.get_id() << " : " << cust.get_name();
+
+		std::cout << std::setw(20) << std::left << cust_str.str();
 
 		if (!cust.get_accounts().empty())
 			std::cout << "[ ";
@@ -148,8 +163,8 @@ void list_customers(const Bank &bank) {
 			std::cout << acc.get_id() << " - " << acc.get_type() //
 			          << " : " << acc.get_balance() << "€";
 
-			if (idx++ >= cust.get_accounts().size())
-				std::cout << '\t';
+			if (idx++ < cust.get_accounts().size() - 1)
+				std::cout << "  |  ";
 		}
 
 		if (!cust.get_accounts().empty())
@@ -534,13 +549,29 @@ void transfer(Bank &bank) {
 	pause();
 }
 
+void history(Bank &bank) {
+	for (const auto &trans : bank.get_history()) {
+		std::cout << trans.id << " : "
+
+		          << "from " << (trans.from ? trans.from->get_id() : -1)
+
+		          << " to " << (trans.to ? trans.to->get_id() : -1)
+
+		          << " -> " << trans.amount << "€" << '\n';
+	}
+
+	pause();
+}
+
 void pause() {
 	std::cout << "\nPress ENTER to continue...";
 	std::string _;
 	getline(std::cin, _);
+
+	clear();
 	return;
 }
 
 void clear() { //
-	std::cout << "\033[2J\033[H";
+	std::cout << "\033[2J\033[H" << std::flush;
 }

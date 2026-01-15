@@ -16,16 +16,21 @@
 #include <vector>
 
 #include "customer.hpp"
+#include "transaction.hpp"
 
 class Bank {
  private:
 	SQLite::Database db;
 	std::vector<Customer> customers;
+	std::vector<Transaction> transactions_hist;
 
  public:
 	Bank(const std::filesystem::path &path);
 
 	bool init();
+
+	std::expected<void, std::string> load_history();
+	std::vector<Transaction> get_history();
 
 	void save_customer(const Customer &customer);
 	void add_customer(const Customer &customer);
@@ -38,8 +43,11 @@ class Bank {
 	std::vector<Customer> get_customers() const;
 
 	// Updates in DB
-	std::expected<void, std::string> update_account(Customer &customer,
-	                                                Account &account);
+	std::expected<void, std::string> update_account //
+	    (Customer &customer, Account &account);
+
+	std::expected<void, std::string> record_transaction //
+	    (Transaction &trans);
 
 	// Transaction methods
 	std::expected<void, std::string> deposit //
