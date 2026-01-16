@@ -5,20 +5,20 @@ This project demonstrates advanced object-oriented design, database integration,
 
 
 ---
-## Overview
+## Description
 
 The SQL Banking Simulation allows users to manage **customers** and **accounts**, perform **transactions**, and store all data in a persistent SQLite database.
 The system is designed to be modular, maintainable, and easily extendable.
 
-Key features include:
-```
-	-[x] Customer creation and management
-	-[x] Multiple account types (e.g. checking, savings)
-	-[x] Deposits, withdrawals, and transfers
-	-[x] Transaction logging
-	-[x] Persistent storage via SQLite
-	-[x] Input validation and error handling
-```
+
+---
+## What this project demonstrates
+
+- Clean project structure and documentation
+- Error handling with std::expected
+- Object-Oriented Design in C++
+- SQL database integration
+- Data consistency
 
 
 ---
@@ -26,15 +26,15 @@ Key features include:
 
 ```
 BankingSimulation/
-├── README.md                 # Project description & documentation
+├── README.md
 │
-├── src/                      # Source files
+├── src/
 │   ├── main.cpp              # Entry point + CLI
 │   ├── account.cpp
 │   ├── customer.cpp
 │   └── bank.cpp
 │
-└── include/                  # Header files
+└── include/
     ├── account.hpp           # Account class
     ├── customer.hpp          # Customer class
     └── bank.hpp              # Bank class + DB interactions
