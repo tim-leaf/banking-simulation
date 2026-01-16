@@ -34,8 +34,8 @@ BankingSimulation/
 │   ├── customer.cpp
 │   └── bank.cpp
 │
-├── include/                  # Header files
-│   ├── account.hpp           # Account class
-│   ├── customer.hpp          # Customer class
-│   └── bank.hpp              # Bank class + DB interactions
+└── include/                  # Header files
+    ├── account.hpp           # Account class
+    ├── customer.hpp          # Customer class
+    └── bank.hpp              # Bank class + DB interactions
 ```

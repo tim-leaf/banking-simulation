@@ -24,8 +24,7 @@ class ColorStream {
 
 // Predefined colors
 inline ColorStream green("\033[32m");
-inline ColorStream red("\033[31m");
-inline ColorStream yellow("\033[33m");
-inline ColorStream blue("\033[34m");
+inline ColorStream magenta("\033[35m");
+inline ColorStream cyan("\033[36m");
 
 } // namespace out
