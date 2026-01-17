@@ -10,6 +10,8 @@ This project demonstrates advanced object-oriented design, database integration,
 The SQL Banking Simulation allows users to manage **customers** and **accounts**, perform **transactions**, and store all data in a persistent SQLite database.
 The system is designed to be modular, maintainable, and easily extendable.
 
+This project intentionally uses a console-based interface to focus on core logic and architecture.
+
 
 ---
 ## What this project demonstrates
