@@ -17,6 +17,14 @@ add_executable(BankingSimulation
 target_include_directories(BankingSimulation PRIVATE include)
 
 # ---- SQLiteCpp ----
-find_package(SQLiteCpp REQUIRED)
+include(FetchContent)
 
-target_link_libraries(BankingSimulation PRIVATE SQLiteCpp)
+FetchContent_Declare(
+    SQLiteCpp
+    GIT_REPOSITORY https://github.com/SRombauts/SQLiteCpp.git
+    GIT_TAG master
+)
+
+FetchContent_MakeAvailable(SQLiteCpp)
+
+target_link_libraries(BankingSimulation PRIVATE SQLiteCpp sqlite3)
