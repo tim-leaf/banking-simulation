@@ -26,6 +26,7 @@
 		033A76F62F173C360033B4D6 /* SQL Banking Simulation */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "SQL Banking Simulation"; sourceTree = BUILT_PRODUCTS_DIR; };
 		03DD889E2F17507B0022C105 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		03DD88AB2F1752330022C105 /* libSQLiteCpp.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSQLiteCpp.0.dylib; path = ../../../../../../opt/homebrew/Cellar/sqlitecpp/3.3.3/lib/libSQLiteCpp.0.dylib; sourceTree = "<group>"; };
+		03F820E42F38F76300DEA3E1 /* CMakeLists.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -56,6 +57,7 @@
 		033A76ED2F173C360033B4D6 = {
 			isa = PBXGroup;
 			children = (
+				03F820E42F38F76300DEA3E1 /* CMakeLists.txt */,
 				03DD889E2F17507B0022C105 /* README.md */,
 				03DD88A52F17507B0022C105 /* src */,
 				03DD88A12F17507B0022C105 /* include */,
