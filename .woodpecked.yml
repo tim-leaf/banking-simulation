@@ -1,0 +1,14 @@
+pipeline:
+  build_linux:
+    image: ubuntu:22.04
+    commands:
+      - apt update
+      - apt install -y cmake g++ libsqlite3-dev
+      - cmake -S . -B build
+      - cmake --build build
+
+  build_windows:
+    image: ghcr.io/mstorsjo/llvm-mingw:latest
+    commands:
+      - cmake -S . -B build -DCMAKE_SYSTEM_NAME=Windows
+      - cmake --build build
