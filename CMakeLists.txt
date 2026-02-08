@@ -19,6 +19,8 @@ target_include_directories(BankingSimulation PRIVATE include)
 # ---- SQLiteCpp ----
 include(FetchContent)
 
+set(SQLITECPP_RUN_CPPCHECK OFF CACHE BOOL "" FORCE)
+
 FetchContent_Declare(
     SQLiteCpp
     GIT_REPOSITORY https://github.com/SRombauts/SQLiteCpp.git
