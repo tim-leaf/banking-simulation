@@ -19,7 +19,7 @@ void list_customers(const Bank &bank);
 void transfer(Bank &bank);
 void withdraw(Bank &bank);
 
-void pause();
+void cli_pause();
 void clear();
 
 int main(int argc, char *argv[]) { //
@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) { //
 			choice = stoi(line);
 		} catch (...) {
 			out::magenta << "Invalid input\n";
-			pause();
+			cli_pause();
 			continue;
 		}
 
@@ -127,13 +127,13 @@ void add_customer(Bank &bank) {
 		cust_id = stoi(line);
 		if (cust_id < 0) {
 			out::magenta << "Invalid ID\n";
-			pause();
+			cli_pause();
 			return;
 		}
 
 	} catch (...) {
 		out::magenta << "Invalid ID\n";
-		pause();
+		cli_pause();
 		return;
 	}
 
@@ -144,7 +144,7 @@ void add_customer(Bank &bank) {
 	bank.add_customer(cust);
 
 	out::cyan << "\ncustomer added\n";
-	pause();
+	cli_pause();
 }
 
 void list_customers(const Bank &bank) {
@@ -176,7 +176,7 @@ void list_customers(const Bank &bank) {
 
 	std::cout << '\n';
 
-	pause();
+	cli_pause();
 }
 
 void create_account_for(Bank &bank) {
@@ -192,7 +192,7 @@ void create_account_for(Bank &bank) {
 		customer_id = stoi(cust_id_str);
 	} catch (...) {
 		out::magenta << "Invalid input\n";
-		pause();
+		cli_pause();
 		return;
 	}
 
@@ -216,7 +216,7 @@ void create_account_for(Bank &bank) {
 		acc_id = stoi(str_id);
 	} catch (...) {
 		out::magenta << "Invalid input\n";
-		pause();
+		cli_pause();
 		return;
 	}
 
@@ -243,7 +243,7 @@ void deposit(Bank &bank) {
 		customer_id = stoi(cust_id_str);
 	} catch (...) {
 		out::magenta << "Invalid input\n";
-		pause();
+		cli_pause();
 		return;
 	}
 
@@ -252,7 +252,7 @@ void deposit(Bank &bank) {
 	if (!customer) {
 		out::magenta << "customer not found with ID " << customer_id << '\n';
 
-		pause();
+		cli_pause();
 
 		return;
 	}
@@ -269,7 +269,7 @@ void deposit(Bank &bank) {
 		account_id = stoi(acc_id_str);
 	} catch (...) {
 		out::magenta << "Invalid input\n";
-		pause();
+		cli_pause();
 		return;
 	}
 
@@ -278,7 +278,7 @@ void deposit(Bank &bank) {
 	if (!account) {
 		out::magenta << "account not found with ID " << account_id << '\n';
 
-		pause();
+		cli_pause();
 
 		return;
 	}
@@ -295,7 +295,7 @@ void deposit(Bank &bank) {
 		amount = stod(amount_str);
 	} catch (...) {
 		out::magenta << "Invalid input\n";
-		pause();
+		cli_pause();
 		return;
 	}
 
@@ -308,7 +308,7 @@ void deposit(Bank &bank) {
 		std::cout << "Balance = " << account->get_balance() << '\n';
 	}
 
-	pause();
+	cli_pause();
 }
 
 void withdraw(Bank &bank) {
@@ -324,7 +324,7 @@ void withdraw(Bank &bank) {
 		customer_id = stoi(cust_id_str);
 	} catch (...) {
 		out::magenta << "Invalid input\n";
-		pause();
+		cli_pause();
 		return;
 	}
 
@@ -333,7 +333,7 @@ void withdraw(Bank &bank) {
 	if (!customer) {
 		out::magenta << "customer not found with ID " << customer_id << '\n';
 
-		pause();
+		cli_pause();
 
 		return;
 	}
@@ -350,7 +350,7 @@ void withdraw(Bank &bank) {
 		account_id = stoi(acc_id_str);
 	} catch (...) {
 		out::magenta << "Invalid input\n";
-		pause();
+		cli_pause();
 		return;
 	}
 
@@ -359,7 +359,7 @@ void withdraw(Bank &bank) {
 	if (!account) {
 		out::magenta << "account not found with ID " << account_id << '\n';
 
-		pause();
+		cli_pause();
 
 		return;
 	}
@@ -376,7 +376,7 @@ void withdraw(Bank &bank) {
 		amount = stod(amount_str);
 	} catch (...) {
 		out::magenta << "Invalid input\n";
-		pause();
+		cli_pause();
 		return;
 	}
 
@@ -393,7 +393,7 @@ void withdraw(Bank &bank) {
 
 	//
 
-	pause();
+	cli_pause();
 }
 
 void transfer(Bank &bank) {
@@ -410,7 +410,7 @@ void transfer(Bank &bank) {
 		customer_A_id = stoi(cust_A_id_str);
 	} catch (...) {
 		out::magenta << "Invalid input\n";
-		pause();
+		cli_pause();
 		return;
 	}
 
@@ -419,7 +419,7 @@ void transfer(Bank &bank) {
 	if (!customer_A) {
 		out::magenta << "customer not found with ID " << customer_A_id << '\n';
 
-		pause();
+		cli_pause();
 
 		return;
 	}
@@ -436,7 +436,7 @@ void transfer(Bank &bank) {
 		account_A_id = stoi(acc_A_id_str);
 	} catch (...) {
 		out::magenta << "Invalid input\n";
-		pause();
+		cli_pause();
 		return;
 	}
 
@@ -445,7 +445,7 @@ void transfer(Bank &bank) {
 	if (!account_A) {
 		out::magenta << "account not found with ID " << account_A_id << '\n';
 
-		pause();
+		cli_pause();
 
 		return;
 	}
@@ -464,7 +464,7 @@ void transfer(Bank &bank) {
 		customer_B_id = stoi(cust_B_id_str);
 	} catch (...) {
 		out::magenta << "Invalid input\n";
-		pause();
+		cli_pause();
 		return;
 	}
 
@@ -473,7 +473,7 @@ void transfer(Bank &bank) {
 	if (!customer_B) {
 		out::magenta << "customer not found with ID " << customer_B_id << '\n';
 
-		pause();
+		cli_pause();
 
 		return;
 	}
@@ -490,7 +490,7 @@ void transfer(Bank &bank) {
 		account_B_id = stoi(acc_B_id_str);
 	} catch (...) {
 		out::magenta << "Invalid input\n";
-		pause();
+		cli_pause();
 		return;
 	}
 
@@ -499,7 +499,7 @@ void transfer(Bank &bank) {
 	if (!account_B) {
 		out::magenta << "account not found with ID " << account_B_id << '\n';
 
-		pause();
+		cli_pause();
 
 		return;
 	}
@@ -518,7 +518,7 @@ void transfer(Bank &bank) {
 		amount = stod(amount_str);
 	} catch (...) {
 		out::magenta << "Invalid input\n";
-		pause();
+		cli_pause();
 		return;
 	}
 
@@ -530,7 +530,7 @@ void transfer(Bank &bank) {
 	if (!result) {
 		out::magenta << result.error() << '\n';
 
-		pause();
+		cli_pause();
 
 		return;
 	}
@@ -545,7 +545,7 @@ void transfer(Bank &bank) {
 
 	//
 
-	pause();
+	cli_pause();
 }
 
 void history(Bank &bank) {
@@ -562,10 +562,10 @@ void history(Bank &bank) {
 		          << " -> " << trans.amount << "€" << '\n';
 	}
 
-	pause();
+	cli_pause();
 }
 
-void pause() {
+void cli_pause() {
 	out::cyan << "\nPress ENTER to continue...";
 	std::string _;
 	getline(std::cin, _);
